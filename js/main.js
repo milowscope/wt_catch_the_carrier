@@ -25,14 +25,14 @@ var BG_WIDTH = 1000;
 var WINDOW_WIDTH = 500;
 var WINDOW_HEIGHT = 350;
 var DEBUG = false; // trueで当たり判定なし
-var FUJIN_DEBUG = true; // trueで風刃でしぬ
+var FUJIN_DEBUG = false; // trueで風刃でしぬ
 
 var SCROLL = 0;  // スクロール量
 var CHARA_X = 0; // 隊長の横位置
 var CHARA_Y = 0; // 隊長の縦位置
 var SUWA = 0;    // 諏訪
 var DAMAGE = 0;  // 被弾数
-
+var SLIP_REASON = "normal"; // コケたモーション normal or banana
 enchant();
 
 window.onload = function () {
@@ -45,7 +45,7 @@ window.onload = function () {
 	game.preload('img/logo.png','img/border.png','img/button1.png','img/button_tw.png',
 				'img/hairein_run2.png', 'img/hairein_slip.png', 'img/hairein_shadow.png',
 				'img/hairein_fujin.png', 'img/hairein_shadow2.png', 'img/fujin.png',
-				'img/hairein_jump.png',
+				'img/hairein_jump.png', 'img/hairein_banana_slip.png',
 				'img/osamu2.png', 'img/cube.png',
 				'img/bird1.png', 'img/bird2.png',
 				'img/banana.png', 'img/escudo2.png');
@@ -229,6 +229,7 @@ window.onload = function () {
 					console.log(SUWA);
 					if (DEBUG == false) {
 						if (SUWA <= 0) {
+							SLIP_REASON = 'normal';
 							game.replaceScene(createGameOverScene());
 						} else {
 							enemy1.x = -10;
@@ -247,6 +248,7 @@ window.onload = function () {
 					console.log(SUWA);
 					if (DEBUG == false) {
 						if (SUWA <= 0) {
+							SLIP_REASON = 'normal';
 							game.replaceScene(createGameOverScene());
 						} else {
 							enemy2.x = -10;
@@ -255,6 +257,7 @@ window.onload = function () {
 				}
 				if (chara.intersect(banana)) {
 					if (DEBUG == false) {
+						SLIP_REASON = 'banana';
 						game.replaceScene(createGameOverScene());
 					}
 				}
@@ -452,10 +455,18 @@ window.onload = function () {
 			
 			
 			// キャラ
-			var chara = new Sprite(60,42);
-			chara.x = CHARA_X; // コケた位置
-			chara.y = GROUND_LINE;
-			chara.image = game.assets['img/hairein_slip.png'];
+			var chara;
+			if (SLIP_REASON == 'normal') {
+				chara = new Sprite(60,42);
+				chara.x = CHARA_X; // コケた位置
+				chara.y = GROUND_LINE;
+				chara.image = game.assets['img/hairein_slip.png'];
+			} else {
+				chara = new Sprite(65,62);
+				chara.x = CHARA_X; // コケた位置
+				chara.y = GROUND_LINE;
+				chara.image = game.assets['img/hairein_banana_slip.png'];
+			}
 			scene.addChild(chara);
 			
 			
@@ -483,9 +494,22 @@ window.onload = function () {
 				}
 			});
 			chara.addEventListener(Event.ENTER_FRAME, function() {
-				if (game.frame % 4 == 0) {
-					if (chara.frame < 5) {
-						chara.frame ++;
+				if (SLIP_REASON == 'normal') {
+					if (game.frame % 4 == 0) {
+						if (chara.frame < 5) {
+							chara.frame ++;
+						}
+					}
+				} else {
+					if (game.frame % 1 == 0) {
+						if (chara.frame < 4) {
+							chara.frame ++;
+						}
+					}
+					if (game.frame % 3 == 0) {
+						if (chara.frame >= 4 && chara.frame < 9) {
+							chara.frame ++;
+						}
 					}
 				}
 			});
