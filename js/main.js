@@ -48,7 +48,8 @@ window.onload = function () {
 				'img/hairein_jump.png', 'img/hairein_banana_slip.png',
 				'img/osamu2.png', 'img/cube.png',
 				'img/bird1.png', 'img/bird2.png',
-				'img/banana.png', 'img/escudo2.png');
+				'img/banana.png', 'img/escudo2.png',
+				'img/score_back.png', 'img/score_numbers.png');
 	game.fps = 20;
 	setScale(game);
 
@@ -80,11 +81,37 @@ window.onload = function () {
 
 			
 			// スコア
-			var scoreLabel = new Label("");
-			scoreLabel.color = '#fff';
-			scoreLabel.x = 50;
-			scoreLabel.y = 50;
-			scene.addChild(scoreLabel);
+			var score = new Sprite(228,60);
+			score.x = 10;
+			score.y = 0;
+			score.image = game.assets['img/score_back.png'];
+			scene.addChild(score);
+			var score1 = new Sprite(24,32);
+			score1.x = 185;
+			score1.y = 18;
+			score1.image = game.assets['img/score_numbers.png'];
+			scene.addChild(score1);
+			var score2 = new Sprite(24,32);
+			score2.x = 165;
+			score2.y = 18;
+			score2.image = game.assets['img/score_numbers.png'];
+			scene.addChild(score2);
+			var score3 = new Sprite(24,32);
+			score3.x = 145;
+			score3.y = 18;
+			score3.image = game.assets['img/score_numbers.png'];
+			scene.addChild(score3);
+			var score4 = new Sprite(24,32);
+			score4.x = 125;
+			score4.y = 18;
+			score4.image = game.assets['img/score_numbers.png'];
+			scene.addChild(score4);
+			var score5 = new Sprite(24,32);
+			score5.x = 105;
+			score5.y = 18;
+			score5.image = game.assets['img/score_numbers.png'];
+			scene.addChild(score5);
+			
 			
 			// 障害物
 			var enemy1 = new Sprite(20,51);
@@ -173,7 +200,18 @@ window.onload = function () {
 				}
 				// スクロールをスコア加算
 				SCROLL += 1;
-				scoreLabel.text = 'score:' + getScore();
+				if ((SCROLL*20) % 10 == 0) {
+					score2.frame++;
+				}
+				if ((SCROLL*20) % 100 == 0) {
+					score3.frame++;
+				}
+				if ((SCROLL*20) % 1000 == 0) {
+					score4.frame++;
+				}
+				if ((SCROLL*20) % 10000 == 0) {
+					score5.frame++;
+				}
 				
 				// 障害物1移動
 				if (SCROLL % 20 == 0 && enemy1.x < 0) {
@@ -373,6 +411,9 @@ window.onload = function () {
 			osamu.image = game.assets['img/osamu2.png'];
 			scene.addChild(osamu);
 			
+			// スコア表示
+			showLastScore(game, scene);
+
 			
 			// とり
 			var bird1 = addBird1(game, scene, 100+CHARA_X, 180);
@@ -469,6 +510,8 @@ window.onload = function () {
 			}
 			scene.addChild(chara);
 			
+			// スコア表示
+			showLastScore(game, scene);
 			
 			// とり
 			var bird1 = addBird1(game, scene, 100+CHARA_X, 180);
@@ -744,6 +787,49 @@ function changeBird(bird_back, bird_front, chara) {
 	if (SUWA == 10) {
 		bird_front[4].x = 30 + chara.x - 50;
 	}
+}
+
+function showLastScore(game, scene) {
+	var score_y = 50;
+	
+	var score = new Sprite(228,60);
+	score.x = 148;
+	score.y = score_y - 18;
+	score.image = game.assets['img/score_back.png'];
+	scene.addChild(score);
+	var score1 = new Sprite(24,32);
+	score1.x = 320;
+	score1.y = score_y;
+	score1.image = game.assets['img/score_numbers.png'];
+	scene.addChild(score1);
+	var score2 = new Sprite(24,32);
+	score2.x = 300;
+	score2.y = score_y;
+	score2.image = game.assets['img/score_numbers.png'];
+	scene.addChild(score2);
+	var score3 = new Sprite(24,32);
+	score3.x = 280;
+	score3.y = score_y;
+	score3.image = game.assets['img/score_numbers.png'];
+	scene.addChild(score3);
+	var score4 = new Sprite(24,32);
+	score4.x = 260;
+	score4.y = score_y;
+	score4.image = game.assets['img/score_numbers.png'];
+	scene.addChild(score4);
+	var score5 = new Sprite(24,32);
+	score5.x = 240;
+	score5.y = score_y;
+	score5.image = game.assets['img/score_numbers.png'];
+	scene.addChild(score5);
+	
+	var num = SCROLL*20;
+	score2.frame += ((num / 10) % 10);
+	score3.frame += ((num / 100) % 10);
+	score4.frame += ((num / 1000) % 10);
+	score5.frame += ((num / 10000) % 10);
+	console.log((num / 10) % 10);
+	;
 }
 
 function getRand(num) {
